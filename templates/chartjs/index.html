@@ -4,9 +4,98 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Coomera</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> 
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
 </head>
 <body>
-  <button></button>
+  <!-- Checks and Tests -->
+  <script>
+    console.log('{{test_files_1}}');
+    console.log('{{test_files_2}}');
+    console.log('{{repetition}}');
+  </script>
+  <div>
+    <input type="dropdown" name="" id="">
+  </div>
+  <div style="overflow-x: scroll">
+    <div class="chart-container" style="position: relative;  width:1200px; margin: auto;">
+      <canvas id="myChartline"></canvas>
+    </div>
+  </div>
+      
+  </div> 
+  <!-- ChartJs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script> 
+  <script> 
+    var endpoint = '/api'; 
+  
+    $.ajax({ 
+      method: "GET", 
+      url: endpoint, 
+      success: function(data) { 
+        drawLineGraph(data, 'myChartline'); 
+        console.log("drawing"); 
+      }, 
+      error: function(error_data) { 
+        console.log(error_data); 
+      } 
+    }) 
+    function location_selector(data,id){
+
+    }
+    function drawLineGraph(data, id) {  
+      var labels = data.datatime_list;
+      var location = data.location; 
+      var meas_1 = data.measr1_list;
+      var meas_2 = data.measr2_list;
+      var ctx = document.getElementById(id).getContext('2d'); 
+
+      var chart = new Chart(ctx, { 
+        // The type of chart we want to create 
+        type: 'line', 
+  
+        // The data for our dataset 
+        data: {
+        datasets: [{
+            label: 'Measurement 1',
+            data: meas_1,
+            borderColor: 'rgb(55, 99, 132)',
+                  }, 
+        {
+            label: 'Measurement 2',
+            data: meas_2,
+            borderColor: 'rgb(100, 19, 132)',
+        }],
+        labels: labels,
+        },
+        // // The data for our dataset 
+        // data: { 
+          
+        //   datasets: [{ 
+        //     label: chartLabel, 
+        //     backgroundColor: 'rgb(255, 100, 200)', 
+        //     borderColor: 'rgb(55, 99, 132)', 
+        //     data: chartdata, 
+        //   }] 
+         
+  
+        // Configuration options go here 
+        options: 
+        { 
+          title: { display: true, text: location},
+          scales: { xAxes: [{ display: true }], 
+          yAxes: [{ ticks: { beginAtZero: true }}] 
+        } 
+        } 
+  
+      }); 
+    } 
+  </script>
+
 </body>
 </html>
