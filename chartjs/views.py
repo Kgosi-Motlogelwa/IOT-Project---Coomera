@@ -21,6 +21,7 @@ class HomeView(View):
         repetition = "No Operation - For Repeated records" # are there any repeated data points
         test_files_1 = "No Operation - For Test if files exist" # are there any csv's
         test_files_2 = "No Operation - For Test if files is csv"
+        date_test = "No Operation - Date Time conversion"
         # path to media file
         directory = 'media/media'
 
@@ -39,14 +40,20 @@ class HomeView(View):
                 f = open(_f) 
                 for line in f:
                         line =  line.split(',')
-                        if Imported_CSVs.objects.filter(Location=line[0], DateTime=line[1]).exists():
+                        if Imported_CSVs.objects.filter(DateTime=line[1]).exists():
                             repetition = "Unsuccessful - All data repeated"
                         else:
                             repetition = "Success - Some new data added"
                             tmp = Imported_CSVs.objects.create()
                             tmp.Location = line[0]
                             # Sanetize DateTime
-                            tmp.DateTime = line[1]
+                            try:
+                                tmp.DateTime = line[1]
+                                #t = datetime.strptime(line[1], "%Y-%m-%d %H:%M:%S %p")
+                                #tmp.DateTime = t.strftime("%Y-%m-%d %H:%M:%S %p")
+                                date_test = "Date Time conversion worked"
+                            except:
+                                date_test = "Date Time failed to be cleaned"
                             tmp.Measurement_1 = line[2]
                             tmp.Measurement_2 = line[3]
                             tmp.save()
@@ -58,6 +65,7 @@ class HomeView(View):
             'repetition' : repetition,
             'test_files_1' : test_files_1,
             'test_files_2' : test_files_2,
+            'date_test': date_test
         }
         return render(request, 'chartjs/index.html', context)
 
@@ -71,7 +79,7 @@ class ChartData(APIView):
         # Import queryset of all objects and First Instance of each unique location.
         qs=Imported_CSVs.objects.all()
         qs_dist=Imported_CSVs.objects.distinct("Location").all()
-
+        #
         # Variables to be export to template
         location_names = []
         location_data = []
@@ -94,6 +102,11 @@ class ChartData(APIView):
                 if  dist_loc_item.Location == item.Location and iter < length:
                     local_name = item.Location
                     datetime_list.append(item.DateTime)
+                    while 
+                    if item.DateTime < start:
+                        start = item.DateTime
+                    if item.DateTime > end:
+                        end = item.DateTime
                     measr1_list.append(item.Measurement_1)
                     measr2_list.append(item.Measurement_2)
 
@@ -112,7 +125,7 @@ class ChartData(APIView):
         for item in location_data:
             if item['Location'] == userInput:
                 location = item['Location']
-                datatime_list = item['Date_Time']
+                datatime_list = item['Date_Time'] 
                 measr1_list = item['Measurement_1']
                 measr2_list = item['Measurement_2']
 
